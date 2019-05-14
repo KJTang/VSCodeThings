@@ -10,16 +10,24 @@
         "Other"
     ],
     "activationEvents": [
-        "onCommand:extension.helloWorld"
+        "onCommand:extension.simplesearch"
     ],
     "main": "./out/extension.js",
     "contributes": {
         "commands": [
             {
-                "command": "extension.helloWorld",
-                "title": "Hello World"
+                "command": "extension.simplesearch",
+                "title": "Search", 
+                "category": "Simple Search"
             }
         ],
+        "keybindings": [
+            {
+                "command": "extension.simplesearch",
+                "key": "ctrl+'",
+                "mac": "cmd+'" 
+            }
+        ], 
         "configuration": {
             "type": "object",
             "title": "configuration for SimpleSearch",
@@ -33,7 +41,7 @@
                         {
                             "label": "Google",
                             "description": "google.com",
-                            "url": "https://www.google.com/search?q={name}", 
+                            "url": "https://www.google.com/search?q={name}" 
                         }
                     ],
                     "description": "put SimpleSearch url here"
