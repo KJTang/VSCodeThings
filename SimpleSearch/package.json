@@ -1,0 +1,58 @@
+{
+    "name": "proj1",
+    "displayName": "Proj1",
+    "description": "no desc",
+    "version": "0.0.1",
+    "engines": {
+        "vscode": "^1.31.0"
+    },
+    "categories": [
+        "Other"
+    ],
+    "activationEvents": [
+        "onCommand:extension.helloWorld"
+    ],
+    "main": "./out/extension.js",
+    "contributes": {
+        "commands": [
+            {
+                "command": "extension.helloWorld",
+                "title": "Hello World"
+            }
+        ],
+        "configuration": {
+            "type": "object",
+            "title": "configuration for SimpleSearch",
+            "properties": {
+                "simplesearch.url": {
+                    "type": [
+                        "array",
+                        "null"
+                    ],
+                    "default": [
+                        {
+                            "label": "Google",
+                            "description": "google.com",
+                            "url": "https://www.google.com/search?q={name}", 
+                        }
+                    ],
+                    "description": "put SimpleSearch url here"
+                }
+            }
+        }
+    },
+    "scripts": {
+        "vscode:prepublish": "npm run compile",
+        "compile": "tsc -p ./",
+        "watch": "tsc -watch -p ./",
+        "postinstall": "node ./node_modules/vscode/bin/install",
+        "test": "npm run compile && node ./node_modules/vscode/bin/test"
+    },
+    "devDependencies": {
+        "@types/mocha": "^2.2.42",
+        "@types/node": "^10.12.21",
+        "tslint": "^5.12.1",
+        "typescript": "^3.4.5",
+        "vscode": "^1.1.28"
+    }
+}
