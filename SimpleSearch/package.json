@@ -1,8 +1,10 @@
 {
-    "name": "proj1",
-    "displayName": "Proj1",
+    "name": "simplesearch",
+    "displayName": "SimpleSearch",
     "description": "no desc",
     "version": "0.0.1",
+    "author": "kjtang",
+    "publisher": "kjtang",
     "engines": {
         "vscode": "^1.31.0"
     },
@@ -62,5 +64,9 @@
         "tslint": "^5.12.1",
         "typescript": "^3.4.5",
         "vscode": "^1.1.28"
+    },
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/KJTang/VSCodeThings/tree/master/SimpleSearch"
     }
 }
