@@ -1,4 +1,5 @@
 import * as vscode from 'vscode';
+import { SearchItem, SearchItemUrlConfig, SearchItemFileConfig } from "./searchitem";
 
 export class SimpleSearch {
     selectItem: SearchItem | undefined;
@@ -16,7 +17,7 @@ export class SimpleSearch {
         }
         this.optionLoaded = true;
 
-        let settings = vscode.workspace.getConfiguration().get("simplesearch.url");
+        let settings = vscode.workspace.getConfiguration().get("simplesearch.searchConfig");
         if (!settings) {
             this.LogError("cannot find \'simplesearch.url\' configuration");
             return;
@@ -26,14 +27,38 @@ export class SimpleSearch {
         let urlList = <Array<Object>>settings;
         for (let i = 0; i !== urlList.length; ++i) {
             let item = <SearchItem>urlList[i];
-            if (!item || !item.label || !item.url) {
+            if (!item || !item.label) {
                 // may need ntf cfg err
                 continue;
             }
-            if (!item.description) {
-                item.description = "";
+            if ((item.type === "url" && item.urlConfig === null) || 
+                (item.type === "file" && item.fileConfig === null)) {
+                // may need ntf cfg err
+                continue;
             }
-            // this.LogInfo('setting ' + i + " \t" + item.label + " " + item.description + " " + item.url);
+
+            // make some init
+            if (!item.inited) { 
+                // add icon
+                if (!item.icon || item.icon === "") {
+                    let icon = "";
+                    if (item.type === "url") {
+                        icon = "$(browser)";
+                    } else if (item.type === "file") {
+                        icon = "$(file)";
+                    }
+                    item.icon = icon;
+                }
+                item.rawlabel = item.label;
+                item.label = item.icon + " " + item.rawlabel;
+                item.inited = true;
+            }
+
+            // if (item.type === "url") {
+            //     this.LogInfo('LoadSetting: ' + i + " \t" + item.label + " " + item.type + " " + (item.urlConfig !== null ? item.urlConfig.url : "null"));
+            // } else {
+            //     this.LogInfo('LoadSetting: ' + i + " \t" + item.label + " " + item.type + " include: " + (item.fileConfig !== null ? item.fileConfig.fileToInclude : "null") + " exclude: " + (item.fileConfig !== null ? item.fileConfig.fileToExclude : "null"));
+            // }
 
             // add cfg
             this.optionList.push(item);
@@ -80,8 +105,7 @@ export class SimpleSearch {
         });
         quickPick.onDidAccept(() => {
             if (this.selectItem) {
-                let searchUrl = this.selectItem.url.replace(/\{name\}/g, str);
-                this.DoSearch(searchUrl);
+                this.DoSearch(str, this.selectItem);
             }
             quickPick.hide();
             this.selectItem = undefined;
@@ -90,14 +114,43 @@ export class SimpleSearch {
         quickPick.show();
     }
 
-    DoSearch(searchUrl: string) {
-        if (searchUrl === "") {
+    DoSearch(str: string, searchItem: SearchItem) {
+        this.LogInfo("TrySearch: " + str);
+        if (searchItem.type === "url") {
+            return this.DoSearchUrl(str, searchItem);
+        } else if (searchItem.type === "file") {
+            return this.DoSearchFile(str, searchItem);
+        } else {
+            this.LogError("unrecognized SearchItem type: " + searchItem.type);
+        }
+    }
+
+    DoSearchUrl(str: string, searchItem: SearchItem) {
+        if (searchItem.urlConfig === null || searchItem.urlConfig.url === "") {
+            this.LogInfo("Search Url Failed");
             return;
         }
-        
-        // search item
-        // this.LogInfo("Search: " + searchUrl);
+
+        let searchUrl = searchItem.urlConfig.url.replace(/\{name\}/g, str);
         vscode.env.openExternal(vscode.Uri.parse(searchUrl));
+    }
+
+    DoSearchFile(str: string, searchItem: SearchItem) {
+        if (searchItem.fileConfig === null) {
+            this.LogInfo("Search File Failed");
+            return;
+        }
+
+        vscode.commands.executeCommand('workbench.action.findInFiles', {
+            query: str, 
+            replace: null, 
+            triggerSearch: true, 
+            filesToInclude: searchItem.fileConfig.fileToInclude, 
+            filesToExclude: searchItem.fileConfig.fileToExclude, 
+            isRegex: false, 
+            isCaseSensitive: false, 
+            matchWholeWord: false, 
+        });
     }
 
     LogInfo(msg: string) {
@@ -106,17 +159,5 @@ export class SimpleSearch {
 
     LogError(msg: string) {
         vscode.window.showErrorMessage("SimpleSearch: " + msg);
-    }
-}
-
-class SearchItem implements vscode.QuickPickItem {
-    label: string;
-    description: string;
-    url: string;
-
-    constructor(label: string, description: string, url: string) {
-        this.label = label;
-        this.description = description;
-        this.url = url;
     }
 }

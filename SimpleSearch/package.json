@@ -34,19 +34,69 @@
             "type": "object",
             "title": "configuration for SimpleSearch",
             "properties": {
-                "simplesearch.url": {
-                    "type": [
-                        "array",
-                        "null"
-                    ],
-                    "default": [
-                        {
-                            "label": "Google",
-                            "description": "google.com",
-                            "url": "https://www.google.com/search?q={name}" 
-                        }
-                    ],
-                    "description": "put SimpleSearch url here"
+                "simplesearch.searchConfig": {
+                    "type": ["array", "null"],
+                    "items": {
+                        "type": "object",
+                        "properties": {
+                            "label": { "type": "string", "description": "name of current cfg" }, 
+                            "description": { "type": "string" },
+                            "type": {
+                                "type": "string",
+                                "default": "url",
+                                "enum": [
+                                    "url",
+                                    "file"
+                                ],
+                                "enumDescriptions": [
+                                    "search string in url",
+                                    "search string in project files"
+                                ]
+                            },
+                            "urlConfig": {
+                                "type": "object",
+                                "properties": {
+                                    "url": {
+                                        "type": "string",
+                                        "description": "url to search"
+                                    }
+                                }, 
+                                "description": "config only used for type 'url'"
+                            },
+                            "fileConfig": {
+                                "type": "object",
+                                "properties": {
+                                    "fileToInclude": {
+                                        "type": "string"
+                                    },
+                                    "fileToExclude": {
+                                        "type": "string"
+                                    }
+                                }, 
+                                "description": "config only used for type 'file'"
+                            }
+                        }, 
+                        "default": [
+                            {
+                                "label": "Google",
+                                "description": "google.com",
+                                "type": "url",
+                                "urlConfig": {
+                                    "url": "https://www.google.com/search?q={name}"
+                                }
+                            },
+                            {
+                                "label": "All Project",
+                                "description": "search all project",
+                                "type": "file",
+                                "fileConfig": {
+                                    "fileToInclude": "",
+                                    "fileToExclude": ""
+                                }
+                            }
+                        ]
+                    }, 
+                    "description": "SimpleSearch config: url, file, ..."
                 }
             }
         }
