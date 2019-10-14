@@ -39,7 +39,7 @@ export class SimpleSearch {
 
             // make some init
             if (!item.inited) { 
-                // add icon
+                // add icon (ref https://code.visualstudio.com/api/references/icons-in-labels)
                 if (!item.icon || item.icon === "") {
                     let icon = "";
                     if (item.type === "url") {

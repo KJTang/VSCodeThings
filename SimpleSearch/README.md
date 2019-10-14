@@ -21,6 +21,9 @@ You can configure quick search urls in your settings, like:
 
 ## Release Notes
 
+### 0.0.2
+Support search in project files
+
 ### 0.0.1
 
 Initial release
