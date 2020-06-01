@@ -7,3 +7,11 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 ## [Unreleased]
 
 - Initial release
+
+## [0.0.1] 
+
+- first release
+
+## [0.0.2]
+### Added
+- reload setting everytime use command, no need reload vscode

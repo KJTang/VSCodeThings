@@ -13,6 +13,7 @@ export function activate(context: vscode.ExtensionContext) {
 			let cls = new quickcommand.QuickCommand(context);
 			quickCmd = cls;
 		}
+		quickCmd.LoadSetting(true);	// refresh config everytime
 		quickCmd.ShowQuickCommand();
 	});
 	context.subscriptions.push(disposable);
